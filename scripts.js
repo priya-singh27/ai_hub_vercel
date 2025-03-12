@@ -1,21 +1,14 @@
-// Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-  // Add floating bubble animation to the background
   createBubbles();
   
-  // Get all tool cards
   const toolCards = document.querySelectorAll('.tool-card');
   
-  // Add click event listeners to each card
   toolCards.forEach(card => {
     card.addEventListener('click', function() {
-      // Add a nice click effect before redirecting
       this.classList.add('animate__animated', 'animate__pulse');
       
-      // Get the URL from the data attribute
       const url = this.getAttribute('data-url');
       
-      // Redirect to the URL after the animation completes
       if (url) {
         setTimeout(() => {
           window.location.href = url;
@@ -23,30 +16,23 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // Add hover animation effect with sound
     card.addEventListener('mouseenter', function() {
-      // Add a subtle pulse animation to the icon
       const iconContainer = this.querySelector('.icon-container');
       iconContainer.style.transform = 'scale(1.1)';
       
-      // Play a subtle hover sound
       playHoverSound();
       
-      // Add a light glow effect
       this.style.boxShadow = '0 10px 30px rgba(106, 17, 203, 0.3)';
     });
     
     card.addEventListener('mouseleave', function() {
-      // Reset the icon animation
       const iconContainer = this.querySelector('.icon-container');
       iconContainer.style.transform = 'scale(1)';
       
-      // Reset the shadow
       this.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.07)';
     });
   });
   
-  // Function to set the current time of day greeting with emoji
   function setGreeting() {
     const header = document.querySelector('header p');
     const hour = new Date().getHours();
@@ -63,36 +49,27 @@ document.addEventListener('DOMContentLoaded', function() {
     header.textContent = greeting;
   }
   
-  // Set the initial greeting
   setGreeting();
   
-  // Update the greeting every hour
-  setInterval(setGreeting, 3600000); // 3600000 ms = 1 hour
+  setInterval(setGreeting, 3600000); 
   
-  // Optional: Track which tools are clicked most frequently
-  // This uses Chrome storage to save user preferences
   toolCards.forEach(card => {
     card.addEventListener('click', function() {
       const toolName = this.querySelector('h2').textContent;
       
-      // Get existing click counts from storage
       chrome.storage.local.get(['toolClicks'], function(result) {
         const toolClicks = result.toolClicks || {};
         
-        // Increment the click count for this tool
         toolClicks[toolName] = (toolClicks[toolName] || 0) + 1;
         
-        // Save back to storage
         chrome.storage.local.set({ toolClicks: toolClicks });
       });
     });
   });
   
-  // Add a fun confetti effect when the page loads
   setTimeout(showConfetti, 1000);
 });
 
-// Create floating background bubbles
 function createBubbles() {
   const container = document.querySelector('.container');
   const bubbleCount = 15;
@@ -101,23 +78,18 @@ function createBubbles() {
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
     
-    // Random size
     const size = Math.random() * 60 + 20;
     bubble.style.width = `${size}px`;
     bubble.style.height = `${size}px`;
     
-    // Random position
     bubble.style.left = `${Math.random() * 100}%`;
     bubble.style.top = `${Math.random() * 100}%`;
     
-    // Random animation delay
     bubble.style.animationDelay = `${Math.random() * 20}s`;
     
-    // Add to container
     container.appendChild(bubble);
   }
   
-  // Add bubble styles
   const style = document.createElement('style');
   style.textContent = `
     .bubble {
@@ -150,9 +122,7 @@ function createBubbles() {
   document.head.appendChild(style);
 }
 
-// Play a subtle hover sound
 function playHoverSound() {
-  // Only create the audio context on first hover to avoid autoplay restrictions
   if (!window.audioContext) {
     try {
       window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -162,7 +132,6 @@ function playHoverSound() {
     }
   }
   
-  // Create a short subtle sound
   const oscillator = window.audioContext.createOscillator();
   const gainNode = window.audioContext.createGain();
   
@@ -180,9 +149,7 @@ function playHoverSound() {
   oscillator.stop(window.audioContext.currentTime + 0.1);
 }
 
-// Show confetti effect
 function showConfetti() {
-  // Create confetti elements
   for (let i = 0; i < 100; i++) {
     createConfettiPiece();
   }
@@ -192,7 +159,6 @@ function createConfettiPiece() {
   const confetti = document.createElement('div');
   confetti.className = 'confetti';
   
-  // Random properties
   const colors = ['#FF9A8B', '#FF6A88', '#FF99AC', '#FCB69F', '#FFECD2', '#A1C4FD', '#C2E9FB', '#D4FC79', '#96E6A1'];
   const size = Math.random() * 8 + 6;
   const color = colors[Math.floor(Math.random() * colors.length)];
@@ -203,10 +169,8 @@ function createConfettiPiece() {
   confetti.style.left = `${Math.random() * 100}vw`;
   confetti.style.top = `-10px`;
   
-  // Random rotation
   confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
   
-  // Animation properties
   const animationDuration = Math.random() * 3 + 2;
   const animationDelay = Math.random() * 2;
   
@@ -214,13 +178,11 @@ function createConfettiPiece() {
   
   document.body.appendChild(confetti);
   
-  // Remove after animation
   setTimeout(() => {
     document.body.removeChild(confetti);
   }, (animationDuration + animationDelay) * 1000);
 }
 
-// Add confetti animation styles
 const confettiStyles = document.createElement('style');
 confettiStyles.textContent = `
   .confetti {
