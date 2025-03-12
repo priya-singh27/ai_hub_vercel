@@ -20,7 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const iconContainer = this.querySelector('.icon-container');
       iconContainer.style.transform = 'scale(1.1)';
       
-      playHoverSound();
+      if (window.innerWidth > 768) {
+        playHoverSound();
+      }
       
       this.style.boxShadow = '0 10px 30px rgba(106, 17, 203, 0.3)';
     });
@@ -57,13 +59,20 @@ document.addEventListener('DOMContentLoaded', function() {
     card.addEventListener('click', function() {
       const toolName = this.querySelector('h2').textContent;
       
-      chrome.storage.local.get(['toolClicks'], function(result) {
-        const toolClicks = result.toolClicks || {};
+      try {
+        const toolClicksJSON = localStorage.getItem('toolClicks');
+        let toolClicks = {};
+        
+        if (toolClicksJSON) {
+          toolClicks = JSON.parse(toolClicksJSON);
+        }
         
         toolClicks[toolName] = (toolClicks[toolName] || 0) + 1;
         
-        chrome.storage.local.set({ toolClicks: toolClicks });
-      });
+        localStorage.setItem('toolClicks', JSON.stringify(toolClicks));
+      } catch (e) {
+        console.log('Error saving click data to localStorage', e);
+      }
     });
   });
   
@@ -132,21 +141,27 @@ function playHoverSound() {
     }
   }
   
-  const oscillator = window.audioContext.createOscillator();
-  const gainNode = window.audioContext.createGain();
-  
-  oscillator.type = 'sine';
-  oscillator.frequency.setValueAtTime(2000, window.audioContext.currentTime);
-  oscillator.frequency.exponentialRampToValueAtTime(1500, window.audioContext.currentTime + 0.1);
-  
-  gainNode.gain.setValueAtTime(0.01, window.audioContext.currentTime);
-  gainNode.gain.exponentialRampToValueAtTime(0.0001, window.audioContext.currentTime + 0.1);
-  
-  oscillator.connect(gainNode);
-  gainNode.connect(window.audioContext.destination);
-  
-  oscillator.start();
-  oscillator.stop(window.audioContext.currentTime + 0.1);
+  if (window.audioContext) {
+    try {
+      const oscillator = window.audioContext.createOscillator();
+      const gainNode = window.audioContext.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(2000, window.audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1500, window.audioContext.currentTime + 0.1);
+      
+      gainNode.gain.setValueAtTime(0.01, window.audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, window.audioContext.currentTime + 0.1);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(window.audioContext.destination);
+      
+      oscillator.start();
+      oscillator.stop(window.audioContext.currentTime + 0.1);
+    } catch (e) {
+      console.log('Error playing sound:', e);
+    }
+  }
 }
 
 function showConfetti() {
@@ -179,8 +194,10 @@ function createConfettiPiece() {
   document.body.appendChild(confetti);
   
   setTimeout(() => {
-    document.body.removeChild(confetti);
-  }, (animationDuration + animationDelay) * 1000);
+    if (confetti && confetti.parentElement) {
+      document.body.removeChild(confetti);
+    }
+  }, (animationDuration + animationDelay) * 1000 + 500);
 }
 
 const confettiStyles = document.createElement('style');
