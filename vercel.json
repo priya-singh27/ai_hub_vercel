@@ -1,12 +1,7 @@
 {
-    "name": "ai-tools-hub",
-    "version": "1.0.0",
-    "main": "index.html",
-    "scripts": {
-      "dev": "serve .",
-      "build": "echo 'No build step required'"
-    },
-    "dependencies": {
-      "serve": "^14.2.0"
-    }
+    "version": 2,
+    "routes": [
+      { "handle": "filesystem" },
+      { "src": "/(.*)", "dest": "/index.html" }
+    ]
   }
