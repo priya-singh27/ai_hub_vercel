@@ -1,7 +1,6 @@
 {
     "name": "ai-tools-hub",
     "version": "1.0.0",
-    "description": "A hub for popular AI tools",
     "main": "index.html",
     "scripts": {
       "dev": "serve .",
