@@ -1,24 +1,7 @@
 {
-    "version": 2,
-    "routes": [
-      {
-        "src": "/public/(.*)",
-        "dest": "/public/$1"
-      },
-      {
-        "src": "/styles\\.css",
-        "dest": "/styles.css"
-      },
-      {
-        "src": "/scripts\\.js",
-        "dest": "/scripts.js"
-      },
-      {
-        "handle": "filesystem"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/index.html"
-      }
-    ]
-  }
+  "version": 2,
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
